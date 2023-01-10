@@ -1,0 +1,378 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cargos {
+  id                     Int        @id(map: "Cargos_pkey") @default(autoincrement())
+  tipo_cargo             String?    @db.VarChar(250)
+  id_usuario_creador     Int?
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @updatedAt @db.Timestamptz(6)
+  estado                 Boolean    @default(true)
+  personal               personal[]
+}
+
+model carreras {
+  id_carrera             Int                  @id(map: "Carreras_pkey") @default(autoincrement())
+  nombre                 String?              @db.VarChar(250)
+  duracion               Int?
+  horas_catedras         Int?
+  horas_reloj            Int?
+  id_usuario_creador     Int
+  f_creador              DateTime?            @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?            @updatedAt @db.Timestamptz(6)
+  id_cohorte             Int?
+  estado                 Boolean?             @default(true)
+  cohorte                cohorte?             @relation(fields: [id_cohorte], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_carrera_cohorte")
+  carreras_unidades      carreras_unidades[]
+  ofertas_educativas     ofertas_educativas[]
+}
+
+model cohorte {
+  id                     Int          @id @default(autoincrement())
+  nombre                 String?      @db.VarChar(150)
+  id_resolucion          Int
+  id_usuario_creador     Int?
+  f_creador              DateTime?    @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?    @updatedAt @db.Timestamptz(6)
+  estado                 Boolean?     @default(true)
+  resoluciones           resoluciones @relation(fields: [id_resolucion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cohorte_resolucion")
+  carreras               carreras[]
+}
+
+model convenios {
+  id                     Int        @id(map: "Convenios_pkey") @default(autoincrement())
+  tipo_convenio          String?    @db.VarChar(100)
+  id_usuario_creador     Int
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @updatedAt @db.Timestamptz(6)
+  estado                 Boolean    @default(true)
+  personal               personal[]
+}
+
+model divisiones {
+  id                     Int       @id(map: "Divisiones_pkey") @default(autoincrement())
+  tipo_division          String?   @db.VarChar(100)
+  id_usuario_creador     Int
+  f_creador              DateTime? @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime? @updatedAt @db.Timestamptz(6)
+  estado                 Boolean   @default(true)
+  puestos                puestos[]
+}
+
+model especialidades {
+  id                     Int        @id(map: "Especialidades_pkey") @default(autoincrement())
+  tipo_especialidad      String?    @db.VarChar(200)
+  id_usuario_creador     Int
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @updatedAt @db.Timestamptz(6)
+  estado                 Boolean    @default(true)
+  personal               personal[]
+}
+
+model estados_civiles {
+  id                     Int        @id(map: "Estado_Civil_pkey") @default(autoincrement())
+  nombre                 String?    @db.VarChar(50)
+  id_usuario_creador     Int
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @updatedAt @db.Timestamptz(6)
+  estado                 Boolean?   @default(true)
+  personas               personas[]
+}
+
+model generos {
+  id                     Int        @id(map: "Genero_pkey") @default(autoincrement())
+  nombre                 String?    @db.VarChar(50)
+  id_usuario_creador     Int
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @updatedAt @db.Timestamptz(6)
+  estado                 Boolean?   @default(true)
+  personas               personas[]
+}
+
+model institutos {
+  id                     Int                  @id(map: "Institutos_pkey") @default(autoincrement())
+  nombre                 String?              @db.VarChar(100)
+  cue                    Int?                 @unique
+  telefono               String?              @db.VarChar(50)
+  url                    String?              @db.VarChar(50)
+  direccion              String?              @db.VarChar(100)
+  correo                 String?              @db.VarChar(50)
+  id_usuario_creador     Int?
+  f_creador              DateTime?            @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?            @updatedAt @db.Timestamptz(6)
+  estado                 Boolean?             @default(true)
+  ofertas_educativas     ofertas_educativas[]
+  permisos               permisos[]
+  personal               personal[]
+}
+
+model localidades {
+  id                     Int        @id(map: "Localidades_pkey") @default(autoincrement())
+  nombre                 String?    @db.VarChar(50)
+  id_usuario_creador     Int?
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @db.Timestamptz(6)
+  estado                 Boolean    @default(true)
+  personas               personas[]
+}
+
+model nacionalidades {
+  id                     Int        @id(map: "Nacionalidad_pkey") @default(autoincrement())
+  nombre                 String?    @db.VarChar
+  id_usuario_creador     Int
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @db.Timestamptz(6)
+  estado                 Boolean?   @default(true)
+  personas               personas[]
+}
+
+model ofertas_educativas {
+  id           Int         @id(map: "Ofertas_Educativas_pkey") @default(autoincrement())
+  id_instituto Int?
+  id_carrera   Int?
+  id_alumno    Int?
+  carreras     carreras?   @relation(fields: [id_carrera], references: [id_carrera], onDelete: NoAction, onUpdate: NoAction, map: "fk_oe_carrera")
+  institutos   institutos? @relation(fields: [id_instituto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_oe_instituto")
+}
+
+model personal {
+  id                     Int             @id(map: "Personal_pkey") @default(autoincrement())
+  id_convenio            Int?
+  id_especialidad        Int?
+  id_cargo               Int?
+  id_titulo              Int?
+  id_puesto              Int?
+  id_instituto           Int?
+  fecha_designacion      DateTime?       @db.Date
+  nro_legajo             Int?
+  fecha_ceses            DateTime?       @db.Date
+  causa_cese             String?         @db.VarChar(250)
+  id_usuario_creador     Int
+  f_creador              DateTime?       @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?       @updatedAt @db.Timestamptz(6)
+  estado                 Boolean?        @default(true)
+  id_persona             Int?
+  cargos                 cargos?         @relation(fields: [id_cargo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_personal_cargo")
+  convenios              convenios?      @relation(fields: [id_convenio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_personal_convenio")
+  especialidades         especialidades? @relation(fields: [id_especialidad], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_personal_especialidad")
+  institutos             institutos?     @relation(fields: [id_instituto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_personal_instituto")
+  personas               personas?       @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_personal_personas")
+  puestos                puestos?        @relation(fields: [id_puesto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_personal_puesto")
+  titulos                titulos?        @relation(fields: [id_titulo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_personal_titulo")
+}
+
+model personas {
+  id                      Int               @id(map: "Personas_pkey") @default(autoincrement())
+  id_estado_civil         Int?
+  id_tipo_doc             Int?
+  id_nacionalidad         Int?
+  id_genero               Int?
+  nombre                  String?           @db.VarChar(250)
+  apellido                String?           @db.VarChar(250)
+  fecha_nacimiento        DateTime?         @db.Date
+  telefono                String?           @db.VarChar
+  correo                  String?           @db.VarChar(250)
+  id_usuario_creador      Int
+  f_creador               DateTime?         @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador  Int?
+  f_modificador           DateTime?         @updatedAt @db.Timestamptz(6)
+  estado                  Boolean?          @default(true)
+  calle                   String?           @db.VarChar(250)
+  manzana                 String?           @db.VarChar(50)
+  lote                    String?           @db.VarChar(50)
+  piso                    String?           @db.VarChar(50)
+  departamento            String?           @db.VarChar(50)
+  barrio                  String?           @db.VarChar(50)
+  id_localidad            Int?
+  dni                     String?           @db.VarChar
+  cuil                    String?           @db.VarChar
+  nro_calle               String?           @db.VarChar
+  calle_periodo_clase     String?           @db.VarChar
+  nro_calle_periodo_clase String?           @db.VarChar
+  piso_periodo_clase      String?           @db.VarChar
+  dpto_periodo_clase      String?           @db.VarChar
+  mzna_periodo_clase      String?           @db.VarChar
+  lote_periodo_clase      String?           @db.VarChar
+  barrio_periodo_clase    String?           @db.VarChar
+  id_loc_periodo_clase    Int?
+  estado_civil            estados_civiles?  @relation(fields: [id_estado_civil], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona_estado_civil")
+  genero                  generos?          @relation(fields: [id_genero], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona_genero")
+  localidades             localidades?      @relation(fields: [id_localidad], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona_localidad")
+  nacionalidades          nacionalidades?   @relation(fields: [id_nacionalidad], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona_nacionalidad")
+  tipo_documento          tipos_documentos? @relation(fields: [id_tipo_doc], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona_tipo_doc")
+  alumnos                 alumnos[]
+  personal                personal[]
+  usuarios                usuarios[]
+}
+
+model puestos {
+  id                     Int         @id(map: "Puestos_pkey") @default(autoincrement())
+  id_division            Int?
+  hora_semanal           Int?
+  id_usuario_creador     Int
+  f_creador              DateTime?   @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?   @updatedAt @db.Timestamptz(6)
+  estado                 Boolean     @default(true)
+  divisiones             divisiones? @relation(fields: [id_division], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puesto_division")
+  personal               personal[]
+}
+
+model regimen_cursada {
+  id     Int     @id(map: "Regimen_cursada_pkey") @default(autoincrement())
+  nombre String? @db.VarChar(250)
+}
+
+model resoluciones {
+  id                     Int       @id(map: "Resoluciones_pkey") @default(autoincrement())
+  tipo                   String?   @db.VarChar(250)
+  numero                 Int?
+  ejercicio              Int?
+  url_archivo            String?   @db.VarChar(250)
+  id_usuario_creador     Int
+  f_creador              DateTime? @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime? @updatedAt @db.Timestamptz(6)
+  estado                 Boolean?  @default(true)
+  cohorte                cohorte[]
+}
+
+model roles {
+  id                     Int        @id(map: "Rol_pkey") @default(autoincrement())
+  nombre_rol             String?    @db.VarChar(100)
+  id_usuario_creador     Int?
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @db.Timestamptz(6)
+  estado                 Boolean    @default(true)
+  accesos                accesos[]
+  permisos               permisos[]
+}
+
+model carreras_unidades {
+  id                    Int                    @id(map: "Tea_Carrera_Unidad_pkey") @default(autoincrement())
+  id_carrera            Int?
+  id_unidad             Int?
+  anio                  Int?
+  carreras              carreras?              @relation(fields: [id_carrera], references: [id_carrera], onDelete: NoAction, onUpdate: NoAction, map: "fk_tea_carrera")
+  unidades_curriculares unidades_curriculares? @relation(fields: [id_unidad], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tea_unidad")
+}
+
+model tipos_documentos {
+  id                     Int        @id(map: "Tipo_Documento_pkey") @default(autoincrement())
+  nombre                 String?    @db.VarChar(50)
+  id_usuario_creador     Int
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @updatedAt @db.Timestamptz(6)
+  estado                 Boolean    @default(true)
+  personas               personas[]
+}
+
+model titulos {
+  id                     Int        @id(map: "Titulos_pkey") @default(autoincrement())
+  tipo_titulo            String?    @db.VarChar(100)
+  id_usuario_creador     Int?
+  f_creador              DateTime?  @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?  @updatedAt @db.Timestamptz(6)
+  estado                 Boolean    @default(true)
+  personal               personal[]
+}
+
+model unidades_curriculares {
+  id                     Int                 @id(map: "Unidades_Curriculares_pkey") @default(autoincrement())
+  nombre                 String?             @db.VarChar(250)
+  horas_semanales        Int?
+  id_usuario_creador     Int?
+  f_creador              DateTime?           @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime?           @updatedAt @db.Timestamptz(6)
+  id_regimen_cursada     Int?
+  estado                 Boolean             @default(true)
+  carreras_unidades      carreras_unidades[]
+
+  @@index([id_regimen_cursada], map: "fki_fk_unidad_regimen")
+}
+
+model usuarios {
+  id         Int        @id(map: "Usuarios_pkey") @default(autoincrement())
+  usuario    String?    @db.VarChar(100)
+  clave      String?    @db.VarChar(100)
+  correo     String?    @unique @db.VarChar(100)
+  estado     Boolean?   @default(true)
+  id_persona Int?
+  personas   personas?  @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_persona")
+  permisos   permisos[]
+}
+
+model permisos {
+  id           Int         @id(map: "Permisos_pkey") @default(autoincrement())
+  id_instituto Int?
+  id_usuario   Int?
+  id_rol       Int?
+  institutos   institutos? @relation(fields: [id_instituto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_permiso_instituto")
+  roles        roles?      @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_permiso_rol")
+  usuarios     usuarios?   @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_permiso_usuario")
+}
+
+model accesos {
+  id        Int       @id @default(autoincrement())
+  id_rol    Int?
+  id_accion Int?
+  id_modulo Int?
+  acciones  acciones? @relation(fields: [id_accion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_acceso_accion")
+  modulos   modulos?  @relation(fields: [id_modulo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_acceso_modulo")
+  roles     roles?    @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_acceso_rol")
+}
+
+model acciones {
+  id      Int       @id @default(autoincrement())
+  ruta    String?   @db.VarChar(100)
+  detalle String?   @db.VarChar(100)
+  accesos accesos[]
+}
+
+model modulos {
+  id          Int       @id @default(autoincrement())
+  nombre      String?   @db.VarChar(100)
+  descripcion String?   @db.VarChar(100)
+  accesos     accesos[]
+}
+
+model alumnos {
+  id         Int       @id @default(autoincrement())
+  legajo     String?   @db.VarChar
+  estado     Boolean?
+  id_persona Int?
+  personas   personas? @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_alumnos_personas")
+}
+
+model regiones {
+  id                     Int       @id(map: "Regiones_pkey") @default(autoincrement())
+  nombre                 String?   @db.VarChar(50)
+  descripcion            String?   @db.VarChar(100)
+  id_usuario_creador     Int?
+  f_creador              DateTime? @default(now()) @db.Timestamptz(6)
+  id_usuario_modificador Int?
+  f_modificador          DateTime? @db.Timestamptz(6)
+  estado                 Boolean   @default(true)
+}
